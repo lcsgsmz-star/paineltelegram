@@ -1,5 +1,4 @@
 import { ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../common/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -13,7 +12,7 @@ const panelUserPublicSelect = {
   isActive: true,
   createdAt: true,
   updatedAt: true,
-} satisfies Prisma.PanelUserSelect;
+} as const;
 
 const roleRank: Record<string, number> = {
   OWNER: 50,
@@ -150,6 +149,11 @@ export class UsersService {
   }
 
   private isUniqueConstraintError(error: unknown) {
-    return error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002';
+    return (
+      typeof error === 'object' &&
+      error !== null &&
+      'code' in error &&
+      (error as { code?: unknown }).code === 'P2002'
+    );
   }
 }

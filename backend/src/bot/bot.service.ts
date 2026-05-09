@@ -274,7 +274,7 @@ export class BotService implements OnModuleInit {
     for (const member of members) {
       const activeType = member.status === 'MUTED' ? 'MUTE' : 'BAN';
       const action = member.status === 'MUTED' ? 'unmute' : 'unban';
-      const latestAction = member.actionLogs.find((log) => log.type === activeType);
+      const latestAction = member.actionLogs.find((log: { type: string }) => log.type === activeType);
 
       if (!latestAction?.durationSeconds) {
         continue;
@@ -383,7 +383,10 @@ export class BotService implements OnModuleInit {
       : [];
     const now = Date.now();
     const warningCount = member?.id
-      ? warningLogs.filter((log) => !log.durationSeconds || log.createdAt.getTime() + log.durationSeconds * 1000 > now)
+      ? warningLogs.filter(
+          (log: { durationSeconds: number | null; createdAt: Date }) =>
+            !log.durationSeconds || log.createdAt.getTime() + log.durationSeconds * 1000 > now,
+        )
           .length
       : 1;
 
@@ -449,7 +452,10 @@ export class BotService implements OnModuleInit {
       : [];
     const now = Date.now();
     const warningCount = member?.id
-      ? warningLogs.filter((log) => !log.durationSeconds || log.createdAt.getTime() + log.durationSeconds * 1000 > now)
+      ? warningLogs.filter(
+          (log: { durationSeconds: number | null; createdAt: Date }) =>
+            !log.durationSeconds || log.createdAt.getTime() + log.durationSeconds * 1000 > now,
+        )
           .length
       : 1;
 
@@ -506,7 +512,7 @@ export class BotService implements OnModuleInit {
     }
 
     const rules = await this.getForbiddenWordRules();
-    const matchedRule = rules.find((rule) => this.matchesForbiddenWord(text, rule.word));
+    const matchedRule = rules.find((rule: ForbiddenWordRule) => this.matchesForbiddenWord(text, rule.word));
 
     if (!matchedRule) {
       return false;
@@ -734,10 +740,10 @@ export class BotService implements OnModuleInit {
   }
 
   private async isTelegramIdExempt(telegramId: string | number) {
-    const rows = await this.prisma.$queryRawUnsafe<Array<{ id: number }>>(
+    const rows = (await this.prisma.$queryRawUnsafe(
       'SELECT "id" FROM "ModerationExemption" WHERE "telegramId" = ? LIMIT 1',
       this.normalizeTelegramId(telegramId),
-    );
+    )) as Array<{ id: number }>;
     return rows.length > 0;
   }
 
@@ -1045,10 +1051,10 @@ export class BotService implements OnModuleInit {
       now.toISOString(),
     );
 
-    const [announcement] = await this.prisma.$queryRawUnsafe<ScheduledAnnouncementRow[]>(
+    const [announcement] = (await this.prisma.$queryRawUnsafe(
       'SELECT * FROM "ScheduledAnnouncement" WHERE "chatId" = ? ORDER BY "id" DESC LIMIT 1',
       targetChatId,
-    );
+    )) as ScheduledAnnouncementRow[];
     if (announcement) this.scheduleAnnouncement(announcement);
 
     await this.prisma.actionLog.create({
@@ -1062,9 +1068,9 @@ export class BotService implements OnModuleInit {
   }
 
   private async scheduleActiveAnnouncements() {
-    const rows = await this.prisma.$queryRawUnsafe<ScheduledAnnouncementRow[]>(
+    const rows = (await this.prisma.$queryRawUnsafe(
       'SELECT * FROM "ScheduledAnnouncement" WHERE "isActive" = 1',
-    );
+    )) as ScheduledAnnouncementRow[];
     rows.forEach((row) => this.scheduleAnnouncement(row));
   }
 
@@ -1078,10 +1084,10 @@ export class BotService implements OnModuleInit {
   }
 
   private async runScheduledAnnouncement(id: number) {
-    const [row] = await this.prisma.$queryRawUnsafe<ScheduledAnnouncementRow[]>(
+    const [row] = (await this.prisma.$queryRawUnsafe(
       'SELECT * FROM "ScheduledAnnouncement" WHERE "id" = ? AND "isActive" = 1',
       id,
-    );
+    )) as ScheduledAnnouncementRow[];
     if (!row || !this.bot) return;
 
     const now = new Date();
@@ -1214,9 +1220,9 @@ export class BotService implements OnModuleInit {
   }
 
   private async getForbiddenWordRules() {
-    return this.prisma.$queryRawUnsafe<ForbiddenWordRule[]>(
+    return (await this.prisma.$queryRawUnsafe(
       'SELECT "id", "word", "punishment", "durationValue", "durationUnit", "durationSeconds" FROM "ForbiddenWord" ORDER BY "createdAt" DESC',
-    );
+    )) as ForbiddenWordRule[];
   }
 
   private async isRegularGroupMember(chatId: number, userId: number) {
@@ -1574,10 +1580,10 @@ export class BotService implements OnModuleInit {
       throw new Error('Bot não inicializado.');
     }
 
-    const [cachedPhoto] = await this.prisma.$queryRawUnsafe<Array<{ dataUrl: string }>>(
+    const [cachedPhoto] = (await this.prisma.$queryRawUnsafe(
       'SELECT "dataUrl" FROM "PhotoCache" WHERE "fileId" = ?',
       fileId,
-    );
+    )) as Array<{ dataUrl: string }>;
     if (cachedPhoto?.dataUrl) {
       return cachedPhoto.dataUrl;
     }
@@ -2273,7 +2279,7 @@ export class BotService implements OnModuleInit {
       await this.prisma.telegramMember.findMany({
         select: { id: true },
       })
-    ).map((member) => member.id);
+    ).map((member: { id: number }) => member.id);
 
     const logWhere =
       memberIds.length > 0

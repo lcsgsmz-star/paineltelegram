@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../common/prisma.service';
 import { BotService } from '../bot/bot.service';
@@ -18,7 +17,7 @@ export class MembersService {
   constructor(private prisma: PrismaService, private botService: BotService) {}
 
   async list(filters: any = {}) {
-    const where: Prisma.TelegramMemberWhereInput = {};
+    const where: any = {};
 
     if (filters.type) {
       const normalizedType = String(filters.type).toUpperCase();

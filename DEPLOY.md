@@ -31,7 +31,21 @@ cp backend/.env.production.example backend/.env
 nano backend/.env
 ```
 
-5. Preencha as variáveis reais, principalmente:
+5. Crie também um `.env` na raiz do projeto para o Docker Compose usar no build do frontend:
+
+```bash
+nano .env
+```
+
+Exemplo usando IP público:
+
+```env
+FRONTEND_URL=http://IP-DO-SERVIDOR:3000
+NEXT_PUBLIC_API_URL=http://IP-DO-SERVIDOR:4000
+DATABASE_URL=file:/app/data/dev.db
+```
+
+6. Preencha as variáveis reais em `backend/.env`, principalmente:
 
 ```env
 DATABASE_URL="file:/app/data/dev.db"
@@ -43,13 +57,13 @@ OWNER_TELEGRAM_ID="7402861984"
 SUB_OWNER_TELEGRAM_IDS="6939836527,7741800942"
 ```
 
-6. Suba o projeto:
+7. Suba o projeto:
 
 ```bash
 docker compose up -d --build
 ```
 
-7. Abra no navegador:
+8. Abra no navegador:
 
 ```text
 http://IP-DO-SERVIDOR:3000

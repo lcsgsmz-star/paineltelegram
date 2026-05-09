@@ -51,10 +51,10 @@ export class ForbiddenWordsService {
   }
 
   async remove(id: number, actorId?: number) {
-    const [word] = await this.prisma.$queryRawUnsafe<Array<{ word: string }>>(
+    const [word] = (await this.prisma.$queryRawUnsafe(
       'SELECT "word" FROM "ForbiddenWord" WHERE "id" = ?',
       id,
-    );
+    )) as Array<{ word: string }>;
     await this.prisma.$executeRawUnsafe('DELETE FROM "ForbiddenWord" WHERE "id" = ?', id);
     if (actorId) {
       await this.logPanelAction(actorId, `Removeu a palavra proibida: ${word?.word || id}.`);

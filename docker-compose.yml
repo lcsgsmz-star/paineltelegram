@@ -1,13 +1,16 @@
 services:
   painel:
-    build: .
+    build:
+      context: .
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
     restart: unless-stopped
     env_file:
       - backend/.env
     environment:
-      DATABASE_URL: file:/app/data/dev.db
-      FRONTEND_URL: http://localhost:3000
-      NEXT_PUBLIC_API_URL: http://localhost:4000
+      DATABASE_URL: ${DATABASE_URL:-file:/app/data/dev.db}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3000}
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:4000}
     ports:
       - "3000:3000"
       - "4000:4000"

@@ -42,10 +42,10 @@ export class ModerationSettingsService {
   constructor(private prisma: PrismaService) {}
 
   async getSettings(): Promise<ModerationSettings> {
-    const rows = await this.prisma.$queryRawUnsafe<Array<{ value: string }>>(
+    const rows = (await this.prisma.$queryRawUnsafe(
       'SELECT "value" FROM "ModerationSetting" WHERE "key" = ?',
       SETTINGS_KEY,
-    );
+    )) as Array<{ value: string }>;
 
     if (!rows[0]?.value) return defaultModerationSettings;
 

@@ -13,8 +13,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
   }
 
   private async ensureLocalSchema() {
-    const columns = await this.$queryRawUnsafe<Array<{ name: string }>>('PRAGMA table_info("PanelUser")');
-    if (!columns.some((column) => column.name === 'permissions')) {
+    const columns = (await this.$queryRawUnsafe('PRAGMA table_info("PanelUser")')) as Array<{ name: string }>;
+    if (!columns.some((column: { name: string }) => column.name === 'permissions')) {
       await this.$executeRawUnsafe('ALTER TABLE "PanelUser" ADD COLUMN "permissions" TEXT NOT NULL DEFAULT \'[]\'');
     }
     await this.$executeRawUnsafe(

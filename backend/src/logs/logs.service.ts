@@ -1,4 +1,3 @@
-import { Prisma } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../common/prisma.service';
 
@@ -8,7 +7,7 @@ const logActorSelect = {
   email: true,
   role: true,
   isActive: true,
-} satisfies Prisma.PanelUserSelect;
+} as const;
 
 const logTargetMemberSelect = {
   id: true,
@@ -19,7 +18,7 @@ const logTargetMemberSelect = {
   status: true,
   isBot: true,
   messageCount: true,
-} satisfies Prisma.TelegramMemberSelect;
+} as const;
 
 @Injectable()
 export class LogsService {

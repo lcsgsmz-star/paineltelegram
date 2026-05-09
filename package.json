@@ -7,7 +7,7 @@
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
     "start:prod": "concurrently \"npm run start:prod:backend\" \"npm run start:prod:frontend\"",
-    "start:prod:backend": "cd backend && npm run start:prod",
+    "start:prod:backend": "cd backend && npm run prisma:push && npm run start:prod",
     "start:prod:frontend": "cd frontend && npm run start",
     "backup:db": "powershell -ExecutionPolicy Bypass -File scripts/backup-database.ps1",
     "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",

@@ -10,6 +10,7 @@
     "postinstall": "node -e \"const fs=require('fs');const cp=require('child_process');const schema='../prisma/schema.prisma';if(fs.existsSync(schema)){cp.execFileSync('npx',['prisma','generate','--schema',schema],{stdio:'inherit'});}else{console.log('Skipping Prisma generate: schema not found.');}\"",
     "build": "npm run prisma:generate && tsc -p tsconfig.build.json",
     "prisma:generate": "prisma generate --schema ../prisma/schema.prisma",
+    "prisma:push": "prisma db push --schema ../prisma/schema.prisma",
     "prisma:migrate": "prisma migrate dev --schema ../prisma/schema.prisma"
   },
   "dependencies": {

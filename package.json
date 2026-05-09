@@ -1,0 +1,23 @@
+{
+  "name": "painel-telegram",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "start:prod": "concurrently \"npm run start:prod:backend\" \"npm run start:prod:frontend\"",
+    "start:prod:backend": "cd backend && npm run start:prod",
+    "start:prod:frontend": "cd frontend && npm run start",
+    "backup:db": "powershell -ExecutionPolicy Bypass -File scripts/backup-database.ps1",
+    "install:all": "npm install && cd backend && npm install && cd ../frontend && npm install",
+    "build": "cd backend && npm run build && cd ../frontend && npm run build"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "prisma": "^5.22.0"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0"
+  }
+}

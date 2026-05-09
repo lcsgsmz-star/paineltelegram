@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model PanelUser {
+  id           Int         @id @default(autoincrement())
+  email        String      @unique
+  username     String    @unique
+  passwordHash String
+  role         String    // OWNER, SUB_OWNER, ADMIN, HELPER, MODERATOR
+  permissions  String      @default("[]")
+  isActive     Boolean     @default(true)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  actionLogs   ActionLog[] @relation("ActorLogs")
+}
+
+model TelegramMember {
+  id               Int         @id @default(autoincrement())
+  telegramId       String      @unique
+  telegramUsername String?
+  fullName         String
+  photoFileId      String?
+  status           String      @default("MEMBER") // MEMBER, ADMIN, BOT, BANNED, MUTED
+  isBot            Boolean     @default(false)
+  messageCount     Int         @default(0)
+  firstMessageAt   DateTime?
+  lastMessageAt    DateTime?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  actionLogs       ActionLog[] @relation("TargetLogs")
+}
+
+model ActionLog {
+  id              Int          @id @default(autoincrement())
+  type            String       // JOIN, LEAVE, MUTE, BAN, PANEL_LOGIN, PANEL_ACTION
+  origin          String       // TELEGRAM, PANEL
+  actorId         Int?
+  actor           PanelUser?   @relation("ActorLogs", fields: [actorId], references: [id])
+  targetMemberId  Int?
+  targetMember    TelegramMember? @relation("TargetLogs", fields: [targetMemberId], references: [id])
+  targetTelegramId String?
+  reason          String?
+  durationMinutes Int?
+  durationValue   Int?
+  durationUnit    String?
+  durationSeconds Int?
+  createdAt       DateTime     @default(now())
+}
+
+model TelegramGroup {
+  id             Int      @id @default(autoincrement())
+  telegramChatId String   @unique
+  title          String
+  username       String?
+  description    String?
+  photoFileId    String?
+  memberCount    Int?
+  isPrivate      Boolean  @default(true)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model ForbiddenWord {
+  id              Int      @id @default(autoincrement())
+  word            String   @unique
+  punishment      String   // MUTE, BAN, WARNING
+  durationValue   Int?
+  durationUnit    String?
+  durationSeconds Int?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

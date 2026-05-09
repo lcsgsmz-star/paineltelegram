@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  background-color: #070b1f;
+  color: #e2e8f0;
+}
+
+html,
+body,
+#__next {
+  min-height: 100%;
+  width: 100%;
+}
+
+body {
+  @apply overflow-x-hidden bg-slate-950 text-slate-100 antialiased;
+}
+
+button {
+  @apply transition-colors duration-150;
+}
+
+input,
+select,
+textarea,
+button {
+  font: inherit;
+  max-width: 100%;
+}
+
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}

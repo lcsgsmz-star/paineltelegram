@@ -1,0 +1,19 @@
+services:
+  painel:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - backend/.env
+    environment:
+      DATABASE_URL: file:/app/data/dev.db
+      FRONTEND_URL: http://localhost:3000
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+    ports:
+      - "3000:3000"
+      - "4000:4000"
+    volumes:
+      - painel-data:/app/data
+      - ./backups:/app/backups
+
+volumes:
+  painel-data:

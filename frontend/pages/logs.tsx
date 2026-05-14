@@ -136,6 +136,10 @@ export default function LogsPage() {
               <option value="BAN">Ban</option>
               <option value="UNBAN">Unban</option>
               <option value="WARNING">Advertência</option>
+              <option value="COMMAND">Comando do bot</option>
+              <option value="MESSAGE">Mensagem capturada</option>
+              <option value="CALLBACK">Clique em botão</option>
+              <option value="ERROR">Erro do bot</option>
               <option value="PANEL_LOGIN">Login</option>
               <option value="PANEL_ACTION">Ação do painel</option>
             </select>
